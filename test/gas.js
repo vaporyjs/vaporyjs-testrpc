@@ -1,4 +1,4 @@
-var Web3 = require('web3');
+var Web3 = require('@vapory/web3');
 var assert = require('assert');
 var TestRPC = require("../index.js");
 var fs = require("fs");
@@ -12,7 +12,7 @@ describe("Gas Estimation", function() {
   var source = fs.readFileSync(path.join(__dirname, "EstimateGas.sol"), "utf8");
 
   before("get accounts", function(done) {
-    web3.eth.getAccounts(function(err, accs) {
+    web3.vap.getAccounts(function(err, accs) {
       if (err) return done(err);
       accounts = accs;
       done();
@@ -21,13 +21,13 @@ describe("Gas Estimation", function() {
 
   before("compile source", function(done) {
     this.timeout(10000);
-    web3.eth.compile.solidity(source, function(err, result) {
+    web3.vap.compile.solidity(source, function(err, result) {
       if (err) return done(err);
 
       var code = "0x" + result.code;
       var abi = result.info.abiDefinition;
 
-      EstimateGasContract = web3.eth.contract(abi);
+      EstimateGasContract = web3.vap.contract(abi);
       EstimateGasContract._code = code;
       EstimateGasContract.new({data: code, from: accounts[0], gas: 3141592}, function(err, instance) {
         if (err) return done(err);
@@ -52,7 +52,7 @@ describe("Gas Estimation", function() {
         if (err) return done(err);
 
         // Get the gas usage.
-        web3.eth.getTransactionReceipt(tx, function(err, receipt) {
+        web3.vap.getTransactionReceipt(tx, function(err, receipt) {
           if (err) return done(err);
 
           // When instamining, gasUsed and cumulativeGasUsed should be the same.

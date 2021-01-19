@@ -2,9 +2,9 @@
 var yargs = require('yargs');
 var TestRPC = require('..');
 var pkg = require("../package.json");
-var util = require("ethereumjs-util");
+var util = require("vaporyjs-util");
 var URL = require("url");
-var Web3 = require("web3");
+var Web3 = require("@vapory/web3");
 var web3 = new Web3(); // Used only for its BigNumber library.
 
 yargs
@@ -83,7 +83,7 @@ if (options.fork) {
 
 var server = TestRPC.server(options);
 
-console.log("EthereumJS TestRPC v" + pkg.version);
+console.log("VaporyJS TestRPC v" + pkg.version);
 
 server.listen(options.port, options.hostname, function(err, state) {
   if (err) {

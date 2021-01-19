@@ -1,4 +1,4 @@
-var Web3 = require('web3');
+var Web3 = require('@vapory/web3');
 var TestRPC = require("../index.js");
 var assert = require('assert');
 var to = require("../lib/utils/to.js");
@@ -18,7 +18,7 @@ describe("Interval Mining", function() {
     }));
 
     // Get the first block (pre-condition)
-    web3.eth.getBlockNumber(function(err, number) {
+    web3.vap.getBlockNumber(function(err, number) {
       if (err) return done(err);
       assert.equal(number, 0);
 
@@ -28,7 +28,7 @@ describe("Interval Mining", function() {
 
       setTimeout(function() {
         // Get the first block (pre-condition)
-        web3.eth.getBlockNumber(function(err, latest_number) {
+        web3.vap.getBlockNumber(function(err, latest_number) {
           assert.equal(latest_number, 2);
           done();
         });
@@ -45,21 +45,21 @@ describe("Interval Mining", function() {
     }));
 
     // Get the first block (pre-condition)
-    web3.eth.getBlockNumber(function(err, number) {
+    web3.vap.getBlockNumber(function(err, number) {
       if (err) return done(err);
       assert.equal(number, 0);
 
       // Queue a transaction
-      web3.eth.sendTransaction({
+      web3.vap.sendTransaction({
         from: first_address,
         to: "0x1234567890123456789012345678901234567890",
-        value: web3.toWei(1, "Ether"),
+        value: web3.toWei(1, "Vapor"),
         gas: 90000
       }, function(err, tx) {
         if (err) return done(err);
 
         // Ensure there's no receipt since the transaction hasn't yet been processed.
-        web3.eth.getTransactionReceipt(tx, function(err, receipt) {
+        web3.vap.getTransactionReceipt(tx, function(err, receipt) {
           if (err) return done(err);
 
           assert.equal(receipt, null);
@@ -68,7 +68,7 @@ describe("Interval Mining", function() {
 
           setTimeout(function() {
             // Get the first block (pre-condition)
-            web3.eth.getTransactionReceipt(tx, function(err, new_receipt) {
+            web3.vap.getTransactionReceipt(tx, function(err, new_receipt) {
               assert.notEqual(new_receipt, null);
               done();
             });
@@ -88,14 +88,14 @@ describe("Interval Mining", function() {
     }));
 
     // Get the first block (pre-condition)
-    web3.eth.getBlockNumber(function(err, number) {
+    web3.vap.getBlockNumber(function(err, number) {
       if (err) return done(err);
       assert.equal(number, 0);
 
       // Stop mining
       web3.currentProvider.sendAsync({
         jsonrpc: "2.0",
-        method: "miner_stop",
+        mvapod: "miner_stop",
         id: new Date().getTime()
       }, function(err) {
         if (err) return done(err);
@@ -103,14 +103,14 @@ describe("Interval Mining", function() {
         // Wait .75 seconds (one and a half mining intervals) and ensure
         // the block number hasn't increased.
         setTimeout(function() {
-          web3.eth.getBlockNumber(function(err, latest_number) {
+          web3.vap.getBlockNumber(function(err, latest_number) {
             if (err) return done(err);
             assert.equal(latest_number, 0);
 
             // Start mining again
             web3.currentProvider.sendAsync({
               jsonrpc: "2.0",
-              method: "miner_start",
+              mvapod: "miner_start",
               params: [1],
               id: new Date().getTime()
             }, function(err) {
@@ -119,7 +119,7 @@ describe("Interval Mining", function() {
               // Wait .75 seconds (one and a half mining intervals) and ensure
               // the block number has increased by one.
               setTimeout(function() {
-                web3.eth.getBlockNumber(function(err, last_number) {
+                web3.vap.getBlockNumber(function(err, last_number) {
                   if (err) return done(err);
 
                   assert(last_number, latest_number + 1);
@@ -151,11 +151,11 @@ describe("Interval Mining", function() {
       logger: logger
     }));
 
-    web3.eth.compile.solidity("pragma solidity ^0.4.2; contract Example { function Example() {throw;} }", function(err, result) {
+    web3.vap.compile.solidity("pragma solidity ^0.4.2; contract Example { function Example() {throw;} }", function(err, result) {
       if (err) return done(err);
       var bytecode = "0x" + result.code;
 
-      web3.eth.sendTransaction({
+      web3.vap.sendTransaction({
         from: first_address,
         data: bytecode,
         gas: 3141592

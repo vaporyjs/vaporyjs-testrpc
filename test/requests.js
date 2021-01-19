@@ -1,6 +1,6 @@
-var Web3 = require('web3');
-var Transaction = require('ethereumjs-tx');
-var utils = require('ethereumjs-util');
+var Web3 = require('@vapory/web3');
+var Transaction = require('vaporyjs-tx');
+var utils = require('vaporyjs-util');
 var assert = require('assert');
 var TestRPC = require("../index.js");
 var solc = require("solc");
@@ -41,7 +41,7 @@ var tests = function(web3) {
   var accounts;
 
   before(function(done) {
-    web3.eth.getAccounts(function(err, accs) {
+    web3.vap.getAccounts(function(err, accs) {
       if (err) return done(err);
 
       accounts = accs;
@@ -49,16 +49,16 @@ var tests = function(web3) {
     });
   });
 
-  describe("eth_accounts", function() {
+  describe("vap_accounts", function() {
     it("should return 10 addresses", function(done) {
       assert.deepEqual(accounts.length, 10);
       done();
     });
   });
 
-  describe("eth_blockNumber", function() {
+  describe("vap_blockNumber", function() {
     it("should return initial block number of zero", function(done) {
-      var number = web3.eth.getBlockNumber(function(err, result) {
+      var number = web3.vap.getBlockNumber(function(err, result) {
         if (err) return done(err);
 
         assert.deepEqual(result, 0);
@@ -69,9 +69,9 @@ var tests = function(web3) {
     });
   });
 
-  describe("eth_coinbase", function() {
+  describe("vap_coinbase", function() {
     it("should return correct address", function(done) {
-      web3.eth.getCoinbase(function(err, coinbase) {
+      web3.vap.getCoinbase(function(err, coinbase) {
         if (err) return done(err);
 
         assert.deepEqual(coinbase, accounts[0]);
@@ -80,9 +80,9 @@ var tests = function(web3) {
     });
   });
 
-  describe("eth_mining", function() {
+  describe("vap_mining", function() {
     it("should return true", function(done) {
-      web3.eth.getMining(function(err, result) {
+      web3.vap.getMining(function(err, result) {
         if (err) return done(err);
 
         assert.deepEqual(result, true);
@@ -91,9 +91,9 @@ var tests = function(web3) {
     });
   });
 
-  describe("eth_hashrate", function() {
+  describe("vap_hashrate", function() {
     it("should return hashrate of zero", function(done) {
-      web3.eth.getHashrate(function(err, result) {
+      web3.vap.getHashrate(function(err, result) {
         if (err) return done(err);
 
         assert.deepEqual(result, 0);
@@ -102,9 +102,9 @@ var tests = function(web3) {
     });
   });
 
-  describe("eth_gasPrice", function() {
+  describe("vap_gasPrice", function() {
     it("should return gas price of 0.02 szabo", function(done) {
-      web3.eth.getGasPrice(function(err, result) {
+      web3.vap.getGasPrice(function(err, result) {
         if (err) return done(err);
 
         assert.deepEqual(result.toNumber(), 20000000000);
@@ -113,9 +113,9 @@ var tests = function(web3) {
     });
   });
 
-  describe("eth_getBalance", function() {
+  describe("vap_getBalance", function() {
     it("should return initial balance", function(done) {
-      web3.eth.getBalance(accounts[0], function(err, result) {
+      web3.vap.getBalance(accounts[0], function(err, result) {
         if (err) return done(err);
 
         assert.deepEqual("0x00000000000000" + result.toString(16), "0x0000000000000056bc75e2d63100000");
@@ -124,7 +124,7 @@ var tests = function(web3) {
     });
 
     it("should return 0 for non-existent account", function(done) {
-      web3.eth.getBalance("0x1234567890123456789012345678901234567890", function(err, result) {
+      web3.vap.getBalance("0x1234567890123456789012345678901234567890", function(err, result) {
         if (err) return done(err);
 
         assert.equal("0x" + result.toString(16), "0x0");
@@ -133,9 +133,9 @@ var tests = function(web3) {
     });
   });
 
-  describe("eth_getBlockByNumber", function() {
+  describe("vap_getBlockByNumber", function() {
     it("should return block given the block number", function(done) {
-      web3.eth.getBlock(0, function(err, block) {
+      web3.vap.getBlock(0, function(err, block) {
         if (err) return done(err);
 
         var expectedFirstBlock = {
@@ -172,7 +172,7 @@ var tests = function(web3) {
     });
 
     it("should return transactions in the block as well", function(done) {
-      web3.eth.sendTransaction({
+      web3.vap.sendTransaction({
         from: accounts[0],
         data: contract.binary,
         gas: 3141592
@@ -182,7 +182,7 @@ var tests = function(web3) {
         // Assume it was processed correctly.
         assert.deepEqual(tx_hash.length, 66);
 
-        web3.eth.getBlock("latest", function(err, block) {
+        web3.vap.getBlock("latest", function(err, block) {
           if (err) return done(err);
 
           assert.equal(block.transactions.length, 1, "Latest block should have one transaction");
@@ -194,13 +194,13 @@ var tests = function(web3) {
     });
   });
 
-  // Relies on the validity of eth_getBlockByNumber above.
-  describe("eth_getBlockByHash", function() {
+  // Relies on the validity of vap_getBlockByNumber above.
+  describe("vap_getBlockByHash", function() {
     it("should return block given the block hash", function(done) {
-      web3.eth.getBlock(0, function(err, blockByNumber) {
+      web3.vap.getBlock(0, function(err, blockByNumber) {
         if (err) return done(err);
 
-        web3.eth.getBlock(blockByNumber.hash, function(err, blockByHash) {
+        web3.vap.getBlock(blockByNumber.hash, function(err, blockByHash) {
           if (err) return done(err);
 
           assert.deepEqual(blockByHash, blockByNumber);
@@ -210,10 +210,10 @@ var tests = function(web3) {
     });
   });
 
-  describe("eth_sign", function() {
+  describe("vap_sign", function() {
   	it("should produce a signature whose signer can be recovered", function(done) {
   	  var msg = web3.sha3("asparagus");
-  	  web3.eth.sign(accounts[0], msg, function(err, sgn) {
+  	  web3.vap.sign(accounts[0], msg, function(err, sgn) {
         if (err) return done(err);
 
     	  sgn = utils.stripHexPrefix(sgn);
@@ -236,8 +236,8 @@ var tests = function(web3) {
     var initialTransaction;
     var contractAddress;
 
-    it("should add a contract to the network (eth_sendTransaction)", function(done) {
-      web3.eth.sendTransaction({
+    it("should add a contract to the network (vap_sendTransaction)", function(done) {
+      web3.vap.sendTransaction({
         from: accounts[0],
         data: contract.binary,
         gas: 3141592
@@ -250,8 +250,8 @@ var tests = function(web3) {
       });
     });
 
-    it("should verify the transaction immediately (eth_getTransactionReceipt)", function(done) {
-      web3.eth.getTransactionReceipt(initialTransaction, function(err, receipt) {
+    it("should verify the transaction immediately (vap_getTransactionReceipt)", function(done) {
+      web3.vap.getTransactionReceipt(initialTransaction, function(err, receipt) {
         if (err) return done(err);
 
         contractAddress = receipt.contractAddress;
@@ -262,8 +262,8 @@ var tests = function(web3) {
       });
     });
 
-    it("should return null if asked for a receipt for a nonexistent transaction (eth_getTransactionReceipt)", function(done) {
-      web3.eth.getTransactionReceipt("0xdeadbeef", function(err, receipt) {
+    it("should return null if asked for a receipt for a nonexistent transaction (vap_getTransactionReceipt)", function(done) {
+      web3.vap.getTransactionReceipt("0xdeadbeef", function(err, receipt) {
         if (err) return done(err);
 
         assert.equal(receipt, null, "Transaction receipt should be null");
@@ -271,8 +271,8 @@ var tests = function(web3) {
       });
     });
 
-    it("should verify there's code at the address (eth_getCode)", function(done) {
-      web3.eth.getCode(contractAddress, function(err, result) {
+    it("should verify there's code at the address (vap_getCode)", function(done) {
+      web3.vap.getCode(contractAddress, function(err, result) {
         if (err) return done(err);
         assert.notEqual(result, null);
         assert.notEqual(result, "0x");
@@ -285,7 +285,7 @@ var tests = function(web3) {
       });
     });
 
-    it("should be able to read data via a call (eth_call)", function(done) {
+    it("should be able to read data via a call (vap_call)", function(done) {
       var call_data = contract.call_data;
       call_data.to = contractAddress;
       call_data.from = accounts[0];
@@ -293,26 +293,26 @@ var tests = function(web3) {
       var starting_block_number = null;
 
       // TODO: Removing this callback hell would be nice.
-      web3.eth.getBlockNumber(function(err, result) {
+      web3.vap.getBlockNumber(function(err, result) {
         if (err) return done(err);
 
         starting_block_number = result;
 
-        web3.eth.call(call_data, function(err, result) {
+        web3.vap.call(call_data, function(err, result) {
           if (err) return done(err);
           assert.equal(web3.toDecimal(result), 5);
 
-          web3.eth.getBlockNumber(function(err, result) {
+          web3.vap.getBlockNumber(function(err, result) {
             if (err) return done(err);
 
-            assert.equal(result, starting_block_number, "eth_call increased block count when it shouldn't have");
+            assert.equal(result, starting_block_number, "vap_call increased block count when it shouldn't have");
             done();
           });
         });
       });
     });
 
-    it("should be able to make a call from an address not in the accounts list (eth_call)", function(done) {
+    it("should be able to make a call from an address not in the accounts list (vap_call)", function(done) {
       var from = "0x1234567890123456789012345678901234567890";
 
       // Assert precondition: Ensure from address isn't in the accounts list.
@@ -324,7 +324,7 @@ var tests = function(web3) {
       call_data.to = contractAddress;
       call_data.from = from;
 
-      web3.eth.call(call_data, function(err, result) {
+      web3.vap.call(call_data, function(err, result) {
         if (err) return done(err);
         assert.equal(web3.toDecimal(result), 5);
 
@@ -332,12 +332,12 @@ var tests = function(web3) {
       });
     });
 
-    it("should be able to make a call when no address is listed (eth_call)", function(done) {
+    it("should be able to make a call when no address is listed (vap_call)", function(done) {
       var call_data = contract.call_data;
       call_data.to = contractAddress;
       delete call_data.from;
 
-      web3.eth.call(call_data, function(err, result) {
+      web3.vap.call(call_data, function(err, result) {
         if (err) return done(err);
         assert.equal(web3.toDecimal(result), 5);
 
@@ -348,10 +348,10 @@ var tests = function(web3) {
     it("should represent the block number correctly in the Oracle contract (oracle.blockhash0)", function(done){
       var oracleSol = fs.readFileSync("./test/Oracle.sol", {encoding: "utf8"});
       var oracleOutput = solc.compile(oracleSol).contracts.Oracle
-      web3.eth.contract(JSON.parse(oracleOutput.interface)).new({ data: oracleOutput.bytecode, from: accounts[0], gas: 3141592 }, function(err, oracle){
+      web3.vap.contract(JSON.parse(oracleOutput.interface)).new({ data: oracleOutput.bytecode, from: accounts[0], gas: 3141592 }, function(err, oracle){
         if(err) return done(err)
         if(!oracle.address) return
-        web3.eth.getBlock(0, function(err, block){
+        web3.vap.getBlock(0, function(err, block){
           if (err) return done(err)
           oracle.blockhash0(function(err, blockhash){
             if (err) return done(err)
@@ -362,7 +362,7 @@ var tests = function(web3) {
       })
     })
 
-    it("should be able to estimate gas of a transaction (eth_estimateGas)", function(done){
+    it("should be able to estimate gas of a transaction (vap_estimateGas)", function(done){
       var tx_data = contract.transaction_data;
       tx_data.to = contractAddress;
       tx_data.from = accounts[0];
@@ -370,54 +370,54 @@ var tests = function(web3) {
       var starting_block_number = null;
 
       // TODO: Removing this callback hell would be nice.
-      web3.eth.getBlockNumber(function(err, result) {
+      web3.vap.getBlockNumber(function(err, result) {
         if (err) return done(err);
 
         starting_block_number = result;
 
-        web3.eth.estimateGas(tx_data, function(err, result) {
+        web3.vap.estimateGas(tx_data, function(err, result) {
           if (err) return done(err);
           assert.equal(result, 27641);
 
-          web3.eth.getBlockNumber(function(err, result) {
+          web3.vap.getBlockNumber(function(err, result) {
             if (err) return done(err);
 
-            assert.equal(result, starting_block_number, "eth_estimateGas increased block count when it shouldn't have");
+            assert.equal(result, starting_block_number, "vap_estimateGas increased block count when it shouldn't have");
             done();
           });
         });
       });
     });
 
-    it("should be able to estimate gas from an account not within the accounts list (eth_estimateGas)", function(done){
+    it("should be able to estimate gas from an account not within the accounts list (vap_estimateGas)", function(done){
       var tx_data = contract.transaction_data;
       tx_data.to = contractAddress;
       tx_data.from = "0x1234567890123456789012345678901234567890";;
 
       var starting_block_number = null;
 
-      web3.eth.estimateGas(tx_data, function(err, result) {
+      web3.vap.estimateGas(tx_data, function(err, result) {
         if (err) return done(err);
         assert.equal(result, 27641);
         done();
       });
     });
 
-    it("should be able to estimate gas when no account is listed (eth_estimateGas)", function(done){
+    it("should be able to estimate gas when no account is listed (vap_estimateGas)", function(done){
       var tx_data = contract.transaction_data;
       tx_data.to = contractAddress;
       delete tx_data.from;
 
       var starting_block_number = null;
 
-      web3.eth.estimateGas(tx_data, function(err, result) {
+      web3.vap.estimateGas(tx_data, function(err, result) {
         if (err) return done(err);
         assert.equal(result, 27641);
         done();
       });
     });
 
-    it("should be able to send a state changing transaction (eth_sendTransaction)", function(done) {
+    it("should be able to send a state changing transaction (vap_sendTransaction)", function(done) {
       var tx_data = contract.transaction_data;
       tx_data.to = contractAddress;
       tx_data.from = accounts[0];
@@ -426,21 +426,21 @@ var tests = function(web3) {
       call_data.from = accounts[0];
       call_data.to = contractAddress;
 
-      web3.eth.sendTransaction(tx_data, function(err, tx) {
+      web3.vap.sendTransaction(tx_data, function(err, tx) {
         if (err) return done(err);
         // Now double check the data was set properly.
-        // NOTE: Because ethereumjs-testrpc processes transactions immediately,
+        // NOTE: Because vaporyjs-testrpc processes transactions immediately,
         // we can do this. Calling the call immediately after the transaction would
-        // fail on a different Ethereum client.
+        // fail on a different Vapory client.
 
-        web3.eth.getTransactionReceipt(tx, function(err, receipt) {
+        web3.vap.getTransactionReceipt(tx, function(err, receipt) {
           if (err) return done(err);
 
           assert.equal(receipt.logs.length, 1, "Receipt had wrong amount of logs");
           assert.equal(receipt.logs[0].blockHash, receipt.blockHash, "Logs blockhash doesn't match block blockhash");
 
           //console.log(call_data);
-          web3.eth.call(call_data, function(err, result) {
+          web3.vap.call(call_data, function(err, result) {
             if (err) return done(err);
 
             assert.equal(web3.toDecimal(result), 25);
@@ -450,7 +450,7 @@ var tests = function(web3) {
       });
     });
 
-    it("should only be able to send an unsigned state changing transaction from an address within the accounts list (eth_sendTransaction)", function(done) {
+    it("should only be able to send an unsigned state changing transaction from an address within the accounts list (vap_sendTransaction)", function(done) {
       var badAddress = "0x1234567890123456789012345678901234567890";
 
       var tx_data = {};
@@ -458,7 +458,7 @@ var tests = function(web3) {
       tx_data.from = badAddress;
       tx_data.value = "0x1";
 
-      web3.eth.sendTransaction(tx_data, function(err, result) {
+      web3.vap.sendTransaction(tx_data, function(err, result) {
         if (err) {
           assert.notEqual(err.message.indexOf("could not unlock signer account"), -1);
           done();
@@ -468,8 +468,8 @@ var tests = function(web3) {
       });
     });
 
-    it("should get the data from storage (eth_getStorageAt)", function(done) {
-      web3.eth.getStorageAt(contractAddress, contract.position_of_value, function(err, result) {
+    it("should get the data from storage (vap_getStorageAt)", function(done) {
+      web3.vap.getStorageAt(contractAddress, contract.position_of_value, function(err, result) {
         assert.equal(web3.toDecimal(result), 25);
         done();
       });
@@ -496,7 +496,7 @@ var tests = function(web3) {
 
     it("should first populate senders address", function(done) {
       // populate senders balance
-      web3.eth.sendTransaction({
+      web3.vap.sendTransaction({
         from: accounts[0],
         to: senderAddress,
         value: '0x3141592',
@@ -507,16 +507,16 @@ var tests = function(web3) {
       });
     });
 
-    it("should add a contract to the network (eth_sendRawTransaction)", function(done) {
-      web3.eth.sendRawTransaction(rawTx, function(err, result) {
+    it("should add a contract to the network (vap_sendRawTransaction)", function(done) {
+      web3.vap.sendRawTransaction(rawTx, function(err, result) {
         if (err) return done(err);
         initialTransaction = result;
         done();
       });
     });
 
-    it("should verify the transaction immediately (eth_getTransactionReceipt)", function(done) {
-      web3.eth.getTransactionReceipt(initialTransaction, function(err, receipt) {
+    it("should verify the transaction immediately (vap_getTransactionReceipt)", function(done) {
+      web3.vap.getTransactionReceipt(initialTransaction, function(err, receipt) {
         if (err) return done(err);
 
         contractAddress = receipt.contractAddress;
@@ -529,8 +529,8 @@ var tests = function(web3) {
       });
     });
 
-    it("should verify the transaction immediately (eth_getTransactionByHash)", function(done) {
-      web3.eth.getTransaction(initialTransaction, function(err, result) {
+    it("should verify the transaction immediately (vap_getTransactionByHash)", function(done) {
+      web3.vap.getTransaction(initialTransaction, function(err, result) {
         if (err) return done(err);
 
         assert.notEqual(result, null, "Transaction result shouldn't be null");
@@ -540,8 +540,8 @@ var tests = function(web3) {
       });
     });
 
-    it("should verify there's code at the address (eth_getCode)", function(done) {
-      web3.eth.getCode(contractAddress, function(err, result) {
+    it("should verify there's code at the address (vap_getCode)", function(done) {
+      web3.vap.getCode(contractAddress, function(err, result) {
         if (err) return done(err);
         assert.notEqual(result, null);
         assert.notEqual(result, "0x");
@@ -554,8 +554,8 @@ var tests = function(web3) {
       });
     });
 
-    it("should be able to get the transaction from the block (eth_getTransactionByBlockHashAndIndex)", function(done) {
-      web3.eth.getTransactionFromBlock(blockHash, 0, function(err, result) {
+    it("should be able to get the transaction from the block (vap_getTransactionByBlockHashAndIndex)", function(done) {
+      web3.vap.getTransactionFromBlock(blockHash, 0, function(err, result) {
         if (err) return done(err);
 
         assert.equal(result.hash, initialTransaction);
@@ -565,8 +565,8 @@ var tests = function(web3) {
       });
     });
 
-    it("should be able to get the transaction from the block (eth_getTransactionByBlockNumberAndIndex)", function(done) {
-      web3.eth.getTransactionFromBlock(blockNumber, 0, function(err, result) {
+    it("should be able to get the transaction from the block (vap_getTransactionByBlockNumberAndIndex)", function(done) {
+      web3.vap.getTransactionFromBlock(blockNumber, 0, function(err, result) {
         if (err) return done(err);
 
         assert.equal(result.hash, initialTransaction);
@@ -576,8 +576,8 @@ var tests = function(web3) {
       });
     });
 
-    it("should throw error for transactions that don't exist in block (eth_getTransactionByBlockNumberAndIndex)", function(done) {
-      web3.eth.getTransactionFromBlock(blockNumber, 3, function(err, result) {
+    it("should throw error for transactions that don't exist in block (vap_getTransactionByBlockNumberAndIndex)", function(done) {
+      web3.vap.getTransactionFromBlock(blockNumber, 3, function(err, result) {
         // We want an error because there is no transaction with id 3.
         if (err) return done();
 
@@ -586,11 +586,11 @@ var tests = function(web3) {
     });
   });
 
-  describe("eth_getTransactionCount", function() {
+  describe("vap_getTransactionCount", function() {
     //it("should return number of transactions sent from an address"); //, function() {
 
     it("should return 0 for non-existent account", function(done) {
-      web3.eth.getTransactionCount("0x1234567890123456789012345678901234567890", function(err, result) {
+      web3.vap.getTransactionCount("0x1234567890123456789012345678901234567890", function(err, result) {
         if (err) return done(err);
 
         assert.equal(result, "0x0");
@@ -599,10 +599,10 @@ var tests = function(web3) {
     });
   });
 
-  describe("eth_compileSolidity", function() {
+  describe("vap_compileSolidity", function() {
     this.timeout(5000);
     it("correctly compiles solidity code", function(done) {
-      web3.eth.compile.solidity(source, function(err, result) {
+      web3.vap.compile.solidity(source, function(err, result) {
         if (err) return done(err);
         assert.equal(result.code, contract.binary.replace("0x", ""));
         done();
@@ -621,10 +621,10 @@ var tests = function(web3) {
         tx_data.from = accounts[0];
         tx_data.value = 0x1;
 
-        web3.eth.sendTransaction(tx_data, function(err, tx) {
+        web3.vap.sendTransaction(tx_data, function(err, tx) {
           if (err) return done(err);
 
-          web3.eth.getTransactionReceipt(tx, function(err, receipt) {
+          web3.vap.getTransactionReceipt(tx, function(err, receipt) {
             if (err) return done(err);
 
             assert.equal(receipt, null);
@@ -658,10 +658,10 @@ var tests = function(web3) {
           tx_data.from = accounts[0];
           tx_data.value = 0x1;
 
-          web3.eth.sendTransaction(tx_data, function(err, tx) {
+          web3.vap.sendTransaction(tx_data, function(err, tx) {
             if (err) return done(err);
             //Check the receipt
-            web3.eth.getTransactionReceipt(tx, function(err, receipt) {
+            web3.vap.getTransactionReceipt(tx, function(err, receipt) {
               if (err) return done(err);
               assert.notEqual(receipt, null); //i.e. receipt exists, so transaction was mined
               done();

@@ -1,5 +1,5 @@
-var Web3 = require('web3');
-var utils = require('ethereumjs-util');
+var Web3 = require('@vapory/web3');
+var utils = require('vaporyjs-util');
 var assert = require('assert');
 var TestRPC = require("../index.js");
 
@@ -15,7 +15,7 @@ describe("Custom Gas Price", function() {
     server.listen(port, function() {
       var oldprovider = web3.currentProvider;
       web3.setProvider(new Web3.providers.HttpProvider("http://localhost:" + port));
-      web3.eth.getGasPrice(function(err, result) {
+      web3.vap.getGasPrice(function(err, result) {
         if (err) return done(err);
         assert.deepEqual(result.toNumber(), 15);
         server.close();
@@ -32,7 +32,7 @@ describe("Custom Gas Price", function() {
     server.listen(port, function() {
       var oldprovider = web3.currentProvider;
       web3.setProvider(new Web3.providers.HttpProvider("http://localhost:" + port));
-      web3.eth.getGasPrice(function(err, result) {
+      web3.vap.getGasPrice(function(err, result) {
         if (err) return done(err);
         assert.deepEqual(result.toNumber(), 15);
         server.close();

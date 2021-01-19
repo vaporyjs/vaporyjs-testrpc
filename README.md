@@ -1,20 +1,20 @@
 # Welcome to `testrpc`
 
-`testrpc` is a Node.js based Ethereum client for testing and development. It uses ethereumjs to simulate full client behavior and make developing Ethereum applications much faster. It also includes all popular RPC functions and features (like events) and can be run deterministically to make development a breeze.
+`testrpc` is a Node.js based Vapory client for testing and development. It uses vaporyjs to simulate full client behavior and make developing Vapory applications much faster. It also includes all popular RPC functions and features (like events) and can be run deterministically to make development a breeze.
 
 # INSTALL
 
 `testrpc` is written in Javascript and distributed as a Node package via `npm`. Make sure you have Node.js installed, and your environment is capable of installing and compiling `npm` modules.
 
 ```Bash
-npm install -g ethereumjs-testrpc
+npm install -g vaporyjs-testrpc
 ```
 
-**Using Windows?** See our [Windows install instructions](https://github.com/ethereumjs/testrpc/wiki/Installing-TestRPC-on-Windows).
+**Using Windows?** See our [Windows install instructions](https://github.com/vaporyjs/testrpc/wiki/Installing-TestRPC-on-Windows).
 
 **Ubuntu User?** Follow the basic instructions for installing [Node.js](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions) and make sure that you have `npm` installed, as well as the `build-essential` `apt` package (it supplies `make` which you will need to compile most things). Use the official Node.js packages, *do not use the package supplied by your distribution.*
 
-Having problems? Be sure to check out the [FAQ](https://github.com/ethereumjs/testrpc/wiki/FAQ) and if you're still having issues and you're sure its a problem with `testrpc` please open an issue.
+Having problems? Be sure to check out the [FAQ](https://github.com/vaporyjs/testrpc/wiki/FAQ) and if you're still having issues and you're sure its a problem with `testrpc` please open an issue.
 
 # USAGE
 
@@ -36,7 +36,7 @@ Options:
 * `-s` or `--seed`: Use arbitrary data to generate the HD wallet mnemonic to be used.
 * `-g` or `--gasPrice`: Use a custom Gas Price (defaults to 1)
 * `-l` or `--gasLimit`: Use a custom Gas Limit (defaults to 0x47E7C4)
-* `-f` or `--fork`: Fork from another currently running Ethereum client at a given block. Input should be the HTTP location and port of the other client, e.g. `http://localhost:8545`. You can optionally specify the block to fork from using an `@` sign: `http://localhost:8545@1599200`.
+* `-f` or `--fork`: Fork from another currently running Vapory client at a given block. Input should be the HTTP location and port of the other client, e.g. `http://localhost:8545`. You can optionally specify the block to fork from using an `@` sign: `http://localhost:8545@1599200`.
 * `--debug`: Output VM opcodes for debugging
 
 Special Options:
@@ -70,14 +70,14 @@ Special Options:
 As a Web3 provider:
 
 ```javascript
-var TestRPC = require("ethereumjs-testrpc");
+var TestRPC = require("vaporyjs-testrpc");
 web3.setProvider(TestRPC.provider());
 ```
 
 As a general http server:
 
 ```javascript
-var TestRPC = require("ethereumjs-testrpc");
+var TestRPC = require("vaporyjs-testrpc");
 var server = TestRPC.server();
 server.listen(port, function(err, blockchain) {...});
 ```
@@ -92,7 +92,7 @@ Both `.provider()` and `.server()` take a single object which allows you to spec
 * `"seed"`: Use arbitrary data to generate the HD wallet mnemonic to be used.
 * `"total_accounts"`: `number` - Number of accounts to generate at startup.
 * `"fork"`: `string` - Same as `--fork` option above.
-* `"time"`: `Date` - Date that the first block should start. Use this feature, along with the `evm_increaseTime` method to test time-dependent code.
+* `"time"`: `Date` - Date that the first block should start. Use this feature, along with the `vvm_increaseTime` method to test time-dependent code.
 * `"locked"`: `boolean` - whether or not accounts are locked by default.
 * `"unlocked_accounts"`: `Array` - array of addresses or address indexes specifying which accounts should be unlocked.
 
@@ -101,36 +101,36 @@ Both `.provider()` and `.server()` take a single object which allows you to spec
 The RPC methods currently implemented are:
 
 
-* `eth_accounts`
-* `eth_blockNumber`
-* `eth_call`
-* `eth_coinbase`
-* `eth_compileSolidity`
-* `eth_estimateGas`
-* `eth_gasPrice`
-* `eth_getBalance`
-* `eth_getBlockByNumber`
-* `eth_getBlockByHash`
-* `eth_getCode` (only supports block number “latest”)
-* `eth_getCompilers`
-* `eth_getFilterChanges`
-* `eth_getFilterLogs`
-* `eth_getLogs`
-* `eth_getStorageAt`
-* `eth_getTransactionByHash`
-* `eth_getTransactionByBlockHashAndIndex`
-* `eth_getTransactionByBlockNumberAndIndex`
-* `eth_getTransactionCount`
-* `eth_getTransactionReceipt`
-* `eth_hashrate`
-* `eth_mining`
-* `eth_newBlockFilter`
-* `eth_newFilter` (includes log/event filters)
-* `eth_sendTransaction`
-* `eth_sendRawTransaction`
-* `eth_sign`
-* `eth_syncing`
-* `eth_uninstallFilter`
+* `vap_accounts`
+* `vap_blockNumber`
+* `vap_call`
+* `vap_coinbase`
+* `vap_compileSolidity`
+* `vap_estimateGas`
+* `vap_gasPrice`
+* `vap_getBalance`
+* `vap_getBlockByNumber`
+* `vap_getBlockByHash`
+* `vap_getCode` (only supports block number “latest”)
+* `vap_getCompilers`
+* `vap_getFilterChanges`
+* `vap_getFilterLogs`
+* `vap_getLogs`
+* `vap_getStorageAt`
+* `vap_getTransactionByHash`
+* `vap_getTransactionByBlockHashAndIndex`
+* `vap_getTransactionByBlockNumberAndIndex`
+* `vap_getTransactionCount`
+* `vap_getTransactionReceipt`
+* `vap_hashrate`
+* `vap_mining`
+* `vap_newBlockFilter`
+* `vap_newFilter` (includes log/event filters)
+* `vap_sendTransaction`
+* `vap_sendRawTransaction`
+* `vap_sign`
+* `vap_syncing`
+* `vap_uninstallFilter`
 * `net_listening`
 * `net_peerCount`
 * `net_version`
@@ -142,10 +142,10 @@ The RPC methods currently implemented are:
 
 There’s also special non-standard methods that aren’t included within the original RPC specification:
 
-* `evm_snapshot` : Snapshot the state of the blockchain at the current block. Takes no parameters. Returns the integer id of the snapshot created.
-* `evm_revert` : Revert the state of the blockchain to a previous snapshot. Takes a single parameter, which is the snapshot id to revert to. If no snapshot id is passed it will revert to the latest snapshot. Returns `true`.
-* `evm_increaseTime` : Jump forward in time. Takes one parameter, which is the amount of time to increase in seconds. Returns the total time adjustment, in seconds.
-* `evm_mine` : Force a block to be mined. Takes no parameters. Mines a block independent of whether or not mining is started or stopped.
+* `vvm_snapshot` : Snapshot the state of the blockchain at the current block. Takes no parameters. Returns the integer id of the snapshot created.
+* `vvm_revert` : Revert the state of the blockchain to a previous snapshot. Takes a single parameter, which is the snapshot id to revert to. If no snapshot id is passed it will revert to the latest snapshot. Returns `true`.
+* `vvm_increaseTime` : Jump forward in time. Takes one parameter, which is the amount of time to increase in seconds. Returns the total time adjustment, in seconds.
+* `vvm_mine` : Force a block to be mined. Takes no parameters. Mines a block independent of whether or not mining is started or stopped.
 
 # TESTING
 
