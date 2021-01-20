@@ -1,7 +1,7 @@
 {
   "name": "vaporyjs-testrpc",
   "namespace": "vaporyjs",
-  "version": "3.0.0.1",
+  "version": "3.0.1",
   "bin": {
     "testrpc": "./bin/testrpc"
   },
@@ -30,7 +30,7 @@
     "shelljs": "^0.6.0",
     "solc": "^0.4.2",
     "@vapory/web3": "0.20.4",
-    "@vapormask/web3-provider-engine": "8.1.0",
+    "@vapormask/web3-provider-engine": "8.1.1",
     "yargs": "^3.29.0"
   },
   "devDependencies": {
