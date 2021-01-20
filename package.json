@@ -1,7 +1,7 @@
 {
   "name": "vaporyjs-testrpc",
   "namespace": "vaporyjs",
-  "version": "3.0.0",
+  "version": "3.0.0.1",
   "bin": {
     "testrpc": "./bin/testrpc"
   },
@@ -21,7 +21,7 @@
     "vaporyjs-block": "^1.7.2",
     "vaporyjs-tx": "^1.3.3",
     "vaporyjs-util": "^5.1.5",
-    "vaporyjs-vm": "^2.3.5",
+    "vaporyjs-vm": "^1.3.0",
     "vaporyjs-wallet": "^0.6.0",
     "fake-merkle-patricia-tree": "^1.0.1",
     "heap": "^0.2.6",
