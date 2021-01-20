@@ -1,7 +1,7 @@
 {
   "name": "vaporyjs-testrpc",
   "namespace": "vaporyjs",
-  "version": "3.0.0.1",
+  "version": "3.0.2",
   "bin": {
     "testrpc": "./bin/testrpc"
   },
@@ -25,7 +25,7 @@
     "vaporyjs-wallet": "^0.6.0",
     "fake-merkle-patricia-tree": "^1.0.1",
     "heap": "^0.2.6",
-    "@vaporyjs/merkle-patricia-tree": "^2.3.0",
+    "@vaporyjs/merkle-patricia-tree": "^2.1.2",
     "seedrandom": "^2.4.2",
     "shelljs": "^0.6.0",
     "solc": "^0.4.2",
