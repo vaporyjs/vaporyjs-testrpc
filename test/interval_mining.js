@@ -95,7 +95,7 @@ describe("Interval Mining", function() {
       // Stop mining
       web3.currentProvider.sendAsync({
         jsonrpc: "2.0",
-        mvapod: "miner_stop",
+        method: "miner_stop",
         id: new Date().getTime()
       }, function(err) {
         if (err) return done(err);
@@ -110,7 +110,7 @@ describe("Interval Mining", function() {
             // Start mining again
             web3.currentProvider.sendAsync({
               jsonrpc: "2.0",
-              mvapod: "miner_start",
+              method: "miner_start",
               params: [1],
               id: new Date().getTime()
             }, function(err) {

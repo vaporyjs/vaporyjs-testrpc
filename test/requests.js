@@ -217,9 +217,9 @@ var tests = function(web3) {
         if (err) return done(err);
 
     	  sgn = utils.stripHexPrefix(sgn);
-    		var r = new Buffer(sgn.slice(0, 64), 'hex');
-    		var s = new Buffer(sgn.slice(64, 128), 'hex');
-    		var v = new Buffer((parseInt(sgn.slice(128, 130), 16) + 27).toString(16), 'hex');
+    		var r = Buffer.from(sgn.slice(0, 64), 'hex');
+    		var s = Buffer.from(sgn.slice(64, 128), 'hex');
+    		var v = Buffer.from((parseInt(sgn.slice(128, 130), 16) + 27).toString(16), 'hex');
     		var pub = utils.ecrecover(utils.toBuffer(msg), v, r, s);
     		var addr = utils.setLength(utils.fromSigned(utils.pubToAddress(pub)), 20);
     		addr = utils.addHexPrefix(addr.toString('hex'));
@@ -483,7 +483,7 @@ var tests = function(web3) {
       data: contract.binary,
       gasLimit: to.hex(3141592)
     })
-    var privateKey = new Buffer('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
+    var privateKey = Buffer.from('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
     var senderAddress = '0x'+utils.privateToAddress(privateKey).toString('hex')
     tx.sign(privateKey)
     var rawTx = '0x'+tx.serialize().toString('hex')
